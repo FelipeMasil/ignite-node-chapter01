@@ -1,33 +1,30 @@
 import http from 'node:http'; //usar o prefixo "node:" para módulos internos no Nodejs
+import { json } from './middlewares/json.js';
 
-/**
- *      MÉTODOS DE REQUISIÇÃO
- *      
- *      GET => Buscar recurso no backend
- *      POST => Criar um recurso no backend
- *      PUT => Atualizar um recurso no backend
- *      PATCH => Atualizar uma informação específica de um recurso no backend
- *      DELETE => Deletar um recurso no backend
- * 
- */
+
 
 const users = []
 
-const server = http.createServer((req, res)=>{
+const server = http.createServer(async (req, res)=>{
     const { method, url } = req;
+
+
+
+        await json(req, res)
 
     if(method === 'GET' && url === '/users'){
         return res
-        .setHeader('Content-type', 'application/json')
         .end(JSON.stringify(users))
     }
 
     if(method === 'POST' && url === '/users'){
         
+        const { name, email } = req.body;
+
         users.push({
             id: 1,
-            name: 'John Doe',
-            email: 'john.doe@mail.com'
+            name,
+            email,
         })
 
         return res.writeHead('201').end();
